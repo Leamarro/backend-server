@@ -8,8 +8,10 @@ var app = express();
 var Usuario = require('../models/usuario');
 
 
-var GoogleAuth = require('google-auth-library');
+let GoogleAuth = require('google-auth-library');
+
 var auth = new GoogleAuth;
+
 
 const GOOGLE_CLIENT_ID = require('../config/config').GOOGLE_CLIENT_ID;
 const GOOGLE_SECRET = require('../config/config').GOOGLE_SECRET;
@@ -218,7 +220,8 @@ function obtenerMenu(ROLE) {
             submenu: [
                 // { titulo: 'Usuarios', url: '/usuarios' },
                 { titulo: 'Hospitales', url: '/hospitales' },
-                { titulo: 'Medicos', url: '/medicos' }
+                { titulo: 'Medicos', url: '/medicos' },
+                { titulo: 'Ciudades', url: '/ciudades' },
             ]
         }
     ];

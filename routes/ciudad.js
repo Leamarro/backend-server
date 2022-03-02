@@ -1,130 +1,122 @@
 var express = require('express');
 
-var mdAutenticacion = require('../middlewares/autenticacion');
-
 var app = express();
 
-var Medico = require('../models/medico');
+var Ciudad = require('../models/ciudad');
 
-// ==========================================
-// Obtener todos los medicos
-// ==========================================
+
+// ============================================
+// Obtener todas las ciudades
+// ============================================
 app.get('/', (req, res, next) => {
 
     var desde = req.query.desde || 0;
     desde = Number(desde);
 
-    Medico.find({})
+    Ciudad.find({})
         .skip(desde)
         .limit(5)
-        .populate('usuario', 'nombre email')
-        .populate('hospital')
+        .populate('usuario', 'nombre')
         .exec(
-            (err, medicos) => {
+            (err, ciudades) => {
 
                 if (err) {
                     return res.status(500).json({
                         ok: false,
-                        mensaje: 'Error cargando medico',
+                        mensaje: 'Error cargando ciudad',
                         errors: err
                     });
                 }
 
-                Medico.count({}, (err, conteo) => {
+                Ciudad.count({}, (err, conteo) => {
+
                     res.status(200).json({
                         ok: true,
-                        medicos: medicos,
+                        ciudades: ciudades,
                         total: conteo
                     });
-
                 });
 
             });
 });
 
 // ==========================================
-// Obtener médico
+//  Obtener ciudad por ID
 // ==========================================
 app.get('/:id', (req, res) => {
 
     var id = req.params.id;
 
-    Medico.findById(id)
-        .populate('usuario', 'nombre email img')
-        .populate('hospital')
-        .exec((err, medico) => {
-
+    Ciudad.findById(id)
+        .populate('usuario', 'nombre img')
+        .exec((err, ciudad) => {
             if (err) {
                 return res.status(500).json({
                     ok: false,
-                    mensaje: 'Error al buscar medico',
+                    mensaje: 'Error al buscar ciudad',
                     errors: err
                 });
             }
 
-            if (!medico) {
+            if (!ciudad) {
                 return res.status(400).json({
                     ok: false,
-                    mensaje: 'El medico con el id ' + id + ' no existe',
-                    errors: { message: 'No existe un medico con ese ID' }
+                    mensaje: 'La ciudad con el id ' + id + 'no existe',
+                    errors: { message: 'No existe una ciudad con ese ID' }
                 });
             }
-
             res.status(200).json({
                 ok: true,
-                medico: medico
+                ciudad: ciudad
             });
-
-        })
-
-
+        });
 });
 
+
 // ==========================================
-// Actualizar Medico
+// Actualizar Ciudad
 // ==========================================
-app.put('/:id', mdAutenticacion.verificaToken, (req, res) => {
+app.put('/:id', (req, res) => {
 
     var id = req.params.id;
     var body = req.body;
 
-    Medico.findById(id, (err, medico) => {
+    Ciudad.findById(id, (err, ciudad) => {
 
 
         if (err) {
             return res.status(500).json({
                 ok: false,
-                mensaje: 'Error al buscar medico',
+                mensaje: 'Error al buscar ciudad',
                 errors: err
             });
         }
 
-        if (!medico) {
+        if (!ciudad) {
             return res.status(400).json({
                 ok: false,
-                mensaje: 'El medico con el id ' + id + ' no existe',
-                errors: { message: 'No existe un medico con ese ID' }
+                mensaje: 'El ciudad con el id ' + id + ' no existe',
+                errors: { message: 'No existe un ciudad con ese ID' }
             });
         }
 
 
-        medico.nombre = body.nombre;
-        medico.usuario = req.usuario._id;
-        medico.hospital = body.hospital;
+        ciudad.nombre = body.nombre;
+        ciudad.usuario = req.ciudad._id;
 
-        medico.save((err, medicoGuardado) => {
+        ciudad.save((err, ciudadGuardada) => {
 
             if (err) {
                 return res.status(400).json({
                     ok: false,
-                    mensaje: 'Error al actualizar medico',
+                    mensaje: 'Error al actualizar ciudad',
                     errors: err
                 });
             }
 
             res.status(200).json({
                 ok: true,
-                medico: medicoGuardado
+                ciudad: ciudadGuardada
             });
 
         });
@@ -135,68 +127,67 @@ app.put('/:id', mdAutenticacion.verificaToken, (req, res) => {
 
 
 
-// ==========================================
-// Crear un nuevo medico
-// ==========================================
-app.post('/', mdAutenticacion.verificaToken, (req, res) => {
+// ==============================================
+// Crear una nueva Ciudad
+// ==============================================
+
+app.post('/', (req, res) => {
 
     var body = req.body;
 
-    var medico = new Medico({
+    var ciudad = new Ciudad({
         nombre: body.nombre,
-        usuario: req.usuario._id,
-        hospital: body.hospital
+        usuario: req.usuario
     });
 
-    medico.save((err, medicoGuardado) => {
+    ciudad.save((err, ciudadGuardada) => {
 
         if (err) {
             return res.status(400).json({
                 ok: false,
-                mensaje: 'Error al crear medico',
+                mensaje: 'Error al crear la ciudad',
                 errors: err
             });
         }
 
         res.status(201).json({
             ok: true,
-            medico: medicoGuardado
+            ciudad: ciudadGuardada
         });
-
 
     });
 
+
 });
 
-
 // ============================================
-//   Borrar un medico por el id
+//   Borrar una ciudad por el id
 // ============================================
-app.delete('/:id', mdAutenticacion.verificaToken, (req, res) => {
+app.delete('/:id', (req, res) => {
 
     var id = req.params.id;
 
-    Medico.findByIdAndRemove(id, (err, medicoBorrado) => {
+    Ciudad.findByIdAndRemove(id, (err, ciudadBorrada) => {
 
         if (err) {
             return res.status(500).json({
                 ok: false,
-                mensaje: 'Error borrar medico',
+                mensaje: 'Error borrar ciudad',
                 errors: err
             });
         }
 
-        if (!medicoBorrado) {
+        if (!ciudadBorrada) {
             return res.status(400).json({
                 ok: false,
-                mensaje: 'No existe un medico con ese id',
-                errors: { message: 'No existe un medico con ese id' }
+                mensaje: 'No existe una ciudad con ese id',
+                errors: { message: 'No existe una ciudad con ese id' }
             });
         }
 
         res.status(200).json({
             ok: true,
-            medico: medicoBorrado
+            ciudad: ciudadBorrada
         });
 
     });

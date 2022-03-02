@@ -29,6 +29,7 @@ var medicoRoutes = require('./routes/medico');
 var busquedaRoutes = require('./routes/busqueda');
 var uploadRoutes = require('./routes/upload');
 var imagenesRoutes = require('./routes/imagenes');
+var ciudadesRoutes = require('./routes/ciudad');
 
 
 // Conexión a la base de datos
@@ -55,7 +56,7 @@ app.use('/login', loginRoutes);
 app.use('/busqueda', busquedaRoutes);
 app.use('/upload', uploadRoutes);
 app.use('/img', imagenesRoutes);
-
+app.use('/ciudad', ciudadesRoutes);
 app.use('/', appRoutes);
 
 

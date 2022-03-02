@@ -91,7 +91,7 @@ function buscarHospitales(busqueda, regex) {
                 if (err) {
                     reject('Error al cargar hospitales', err);
                 } else {
-                    resolve(hospitales);
+                    resolve(hospitales)
                 }
             });
     });
@@ -109,7 +109,7 @@ function buscarMedicos(busqueda, regex) {
                 if (err) {
                     reject('Error al cargar medicos', err);
                 } else {
-                    resolve(medicos);
+                    resolve(medicos)
                 }
             });
     });

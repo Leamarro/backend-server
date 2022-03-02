@@ -176,5 +176,4 @@ app.delete('/:id', [mdAutenticacion.verificaToken, mdAutenticacion.verificaADMIN
 });
 
 
-
 module.exports = app;
